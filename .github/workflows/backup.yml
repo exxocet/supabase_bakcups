@@ -2,8 +2,8 @@ name: Supabase Backup
 
 on:
   schedule:
-    - cron: '0 6 * * *'  # todos los días a las 3am Argentina (UTC-3)
-  workflow_dispatch:       # permite correrlo manualmente también
+    - cron: '0 6 * * *'
+  workflow_dispatch:
 
 jobs:
   backup:
@@ -13,21 +13,33 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Instalar pg_dump
-        run: sudo apt-get install -y postgresql-client
+      - name: Instalar Supabase CLI
+        run: |
+          curl -sSL https://github.com/supabase/cli/releases/latest/download/supabase_linux_amd64.tar.gz | tar -xz
+          sudo mv supabase /usr/local/bin/
 
       - name: Backup RICO
         run: |
           mkdir -p backups
-          pg_dump "${{ secrets.RICO_DB_URL }}" \
+          PGPASSWORD=19deOctubre2040! pg_dump \
+            -h db.uekcfkmpmbrbyltqxhmy.supabase.co \
+            -U postgres \
+            -d postgres \
             --no-owner --no-acl \
             -f backups/rico_$(date +%Y-%m-%d).sql
+        env:
+          PGSSLMODE: require
 
       - name: Backup Alcla v2
         run: |
-          pg_dump "${{ secrets.ALCLA_DB_URL }}" \
+          PGPASSWORD=19deOctubre2040! pg_dump \
+            -h db.tjziutnvbaknqgtshdla.supabase.co \
+            -U postgres \
+            -d postgres \
             --no-owner --no-acl \
             -f backups/alcla_$(date +%Y-%m-%d).sql
+        env:
+          PGSSLMODE: require
 
       - name: Commit backups
         run: |
