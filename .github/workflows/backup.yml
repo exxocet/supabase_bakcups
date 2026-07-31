@@ -13,33 +13,21 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Instalar Supabase CLI
-        run: |
-          curl -sSL https://github.com/supabase/cli/releases/latest/download/supabase_linux_amd64.tar.gz | tar -xz
-          sudo mv supabase /usr/local/bin/
+      - name: Instalar pg_dump
+        run: sudo apt-get install -y postgresql-client
 
       - name: Backup RICO
         run: |
           mkdir -p backups
-          PGPASSWORD=19deOctubre2040! pg_dump \
-            -h db.uekcfkmpmbrbyltqxhmy.supabase.co \
-            -U postgres \
-            -d postgres \
+          pg_dump "${{ secrets.RICO_DB_URL }}" \
             --no-owner --no-acl \
             -f backups/rico_$(date +%Y-%m-%d).sql
-        env:
-          PGSSLMODE: require
 
       - name: Backup Alcla v2
         run: |
-          PGPASSWORD=19deOctubre2040! pg_dump \
-            -h db.tjziutnvbaknqgtshdla.supabase.co \
-            -U postgres \
-            -d postgres \
+          pg_dump "${{ secrets.ALCLA_DB_URL }}" \
             --no-owner --no-acl \
             -f backups/alcla_$(date +%Y-%m-%d).sql
-        env:
-          PGSSLMODE: require
 
       - name: Commit backups
         run: |
