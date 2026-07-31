@@ -1,0 +1,38 @@
+name: Supabase Backup
+
+on:
+  schedule:
+    - cron: '0 6 * * *'  # todos los días a las 3am Argentina (UTC-3)
+  workflow_dispatch:       # permite correrlo manualmente también
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Instalar pg_dump
+        run: sudo apt-get install -y postgresql-client
+
+      - name: Backup RICO
+        run: |
+          mkdir -p backups
+          pg_dump "${{ secrets.RICO_DB_URL }}" \
+            --no-owner --no-acl \
+            -f backups/rico_$(date +%Y-%m-%d).sql
+
+      - name: Backup Alcla v2
+        run: |
+          pg_dump "${{ secrets.ALCLA_DB_URL }}" \
+            --no-owner --no-acl \
+            -f backups/alcla_$(date +%Y-%m-%d).sql
+
+      - name: Commit backups
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add backups/
+          git commit -m "backup $(date +%Y-%m-%d)" || echo "Sin cambios"
+          git push
