@@ -32,9 +32,23 @@ jobs:
           pg_dump "${{ secrets.ALCLA_DB_URL }}" \
             --no-owner --no-acl | gzip > backups/alcla_$(date +%Y-%m-%d).sql.gz
 
+      - name: Verificar backups
+        run: |
+          echo "=== RICO ==="
+          gunzip -t backups/rico_$(date +%Y-%m-%d).sql.gz && echo "OK: archivo íntegro"
+          LINES=$(gunzip -c backups/rico_$(date +%Y-%m-%d).sql.gz | wc -l)
+          echo "Líneas: $LINES"
+          if [ "$LINES" -lt 100 ]; then echo "ERROR: archivo sospechosamente chico"; exit 1; fi
+
+          echo "=== ALCLA ==="
+          gunzip -t backups/alcla_$(date +%Y-%m-%d).sql.gz && echo "OK: archivo íntegro"
+          LINES=$(gunzip -c backups/alcla_$(date +%Y-%m-%d).sql.gz | wc -l)
+          echo "Líneas: $LINES"
+          if [ "$LINES" -lt 100 ]; then echo "ERROR: archivo sospechosamente chico"; exit 1; fi
+
       - name: Limpiar backups viejos
         run: |
-          find backups/ -name "*.sql.gz" -mtime +10 -delete
+          find backups/ -name "*.sql.gz" -mtime +30 -delete
 
       - name: Commit backups
         run: |
