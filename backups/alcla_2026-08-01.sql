@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict 34hxFuaENVlILsheGc2CcwndGc3JFq4Q2QWIDnzwqcvdn8IqQx9E7GfhR5Kx3Gf
+\restrict HUhUO5Nm4U0Uu52DOZ5WvpwBvXZJWKQYkaar1Cbaac9NuglrgqZC0X1tbuiex8t
 
 -- Dumped from database version 17.6
 -- Dumped by pg_dump version 17.10 (Ubuntu 17.10-1.pgdg24.04+1)
@@ -6935,6 +6935,7 @@ COPY cron.job_run_details (jobid, runid, job_pid, database, username, command, s
 1	1889	2857912	postgres	postgres	DELETE FROM sessions WHERE expires_at < now()	succeeded	DELETE 0	2026-08-01 09:00:00.024842+00	2026-08-01 09:00:00.027717+00
 1	1895	2882837	postgres	postgres	DELETE FROM sessions WHERE expires_at < now()	succeeded	DELETE 0	2026-08-01 15:00:00.027482+00	2026-08-01 15:00:00.030898+00
 1	1890	2862051	postgres	postgres	DELETE FROM sessions WHERE expires_at < now()	succeeded	DELETE 0	2026-08-01 10:00:00.026453+00	2026-08-01 10:00:00.031174+00
+1	1896	2887036	postgres	postgres	DELETE FROM sessions WHERE expires_at < now()	succeeded	DELETE 0	2026-08-01 16:00:00.026494+00	2026-08-01 16:00:00.031155+00
 \.
 
 
@@ -58467,5 +58468,5 @@ CREATE EVENT TRIGGER pgrst_drop_watch ON sql_drop
 -- PostgreSQL database dump complete
 --
 
-\unrestrict 34hxFuaENVlILsheGc2CcwndGc3JFq4Q2QWIDnzwqcvdn8IqQx9E7GfhR5Kx3Gf
+\unrestrict HUhUO5Nm4U0Uu52DOZ5WvpwBvXZJWKQYkaar1Cbaac9NuglrgqZC0X1tbuiex8t
 
