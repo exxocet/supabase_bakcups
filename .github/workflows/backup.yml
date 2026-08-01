@@ -25,18 +25,16 @@ jobs:
         run: |
           mkdir -p backups
           pg_dump "${{ secrets.RICO_DB_URL }}" \
-            --no-owner --no-acl \
-            -f backups/rico_$(date +%Y-%m-%d).sql
+            --no-owner --no-acl | gzip > backups/rico_$(date +%Y-%m-%d).sql.gz
 
       - name: Backup Alcla v2
         run: |
           pg_dump "${{ secrets.ALCLA_DB_URL }}" \
-            --no-owner --no-acl \
-            -f backups/alcla_$(date +%Y-%m-%d).sql
+            --no-owner --no-acl | gzip > backups/alcla_$(date +%Y-%m-%d).sql.gz
 
       - name: Limpiar backups viejos
         run: |
-          find backups/ -name "*.sql" -mtime +14 -delete
+          find backups/ -name "*.sql.gz" -mtime +10 -delete
 
       - name: Commit backups
         run: |
